@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
             if (h * vx < airControlMax)
                 rigidBody.AddForce(new Vector2(h * airControlForce, 0));
         }
+
     }
 } 
 

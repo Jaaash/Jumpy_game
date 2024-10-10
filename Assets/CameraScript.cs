@@ -1,22 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class CameraScript : MonoBehaviour
 {
     public Transform attachedPlayer;
     Camera thisCamera;
-    public float boxSizeX = 15.0f; //Higher numbers = smaller box, more responsive camera
+    public float boxSizeX = 15.0f; //Size of box around player. Higher numbers = more responsive camera
     public float boxSizeY = 10.0f;
-
     public float blendAmount = 0.05f; // lower values blend slower
-    // Use this for initialization
+
+
     void Start()
     {
         thisCamera = GetComponent<Camera>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         Vector3 playerPos = attachedPlayer.transform.position;
@@ -49,3 +49,9 @@ public class CameraScript : MonoBehaviour
     }
 }
 
+
+/* TO DO:
+ * Figure out how to make an invisible floating dot infront of the player
+ * have the distance between the dot and the player be decided by lookAheadAmount * h
+ * centre the camera box around that dot instead of the player.
+ */
