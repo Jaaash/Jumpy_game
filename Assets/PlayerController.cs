@@ -11,18 +11,27 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 8.0f;
     public float airControlForce = 10.0f;      // public variables can be adjusted from within Unity editor, under the 'Components' panel.
     public float airControlMax = 1.5f;
-    Vector2 boxExtents;        // Variable to contain the vector info for the outer bounds of the BoxCollider
+    Vector2 boxExtents;      // Variable to contain the vector info for the outer bounds of the BoxCollider
+    Animator animator;
 
     // Use this for initialization
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         boxExtents = GetComponent<BoxCollider2D>().bounds.extents; // sets the boxExtents variable
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        float xSpeed = Mathf.Abs(rigidBody.velocity.x);
+        animator.SetFloat("xSpeed", xSpeed);
+
+        if (rigidBody.velocity.x * transform.localScale.x < 0f)
+        {
+            transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        }
     }
     void FixedUpdate()
     {

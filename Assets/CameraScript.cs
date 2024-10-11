@@ -17,7 +17,7 @@ public class CameraScript : MonoBehaviour
         thisCamera = GetComponent<Camera>();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         Vector3 playerPos = attachedPlayer.transform.position;
         Vector3 cameraPos = transform.position;
