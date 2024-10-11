@@ -1,16 +1,16 @@
-
-
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class PlayerController : MonoBehaviour
 {
     Rigidbody2D rigidBody;
-    public float speed = 5.0f;
+    public float speed = 15.0f;
     public float jumpForce = 8.0f;
     public float airControlForce = 10.0f;      // public variables can be adjusted from within Unity editor, under the 'Components' panel.
     public float airControlMax = 1.5f;
+    public float blinkChance = 200.0f;
+
     Vector2 boxExtents;      // Variable to contain the vector info for the outer bounds of the BoxCollider
     Animator animator;
 
@@ -25,13 +25,27 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         float xSpeed = Mathf.Abs(rigidBody.velocity.x);
         animator.SetFloat("xSpeed", xSpeed);
+        float ySpeed = Mathf.Abs(rigidBody.velocity.y);
+        animator.SetFloat("ySpeed", ySpeed);
 
         if (rigidBody.velocity.x * transform.localScale.x < 0f)
         {
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         }
+
+
+        float blinkVal = Random.Range(0.0f, blinkChance);          // Blinking control
+        if (blinkVal < 1.0f)
+        {
+            animator.SetTrigger("blinkTrigger");
+        }
+            else
+            {
+                animator.ResetTrigger("blinkTrigger");
+            }
     }
     void FixedUpdate()
     {
