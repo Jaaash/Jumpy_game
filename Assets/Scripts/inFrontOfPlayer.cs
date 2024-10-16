@@ -6,6 +6,7 @@ using UnityEngine;
 public class inFrontOfPlayer : MonoBehaviour
 {
     public float lookAheadAmount = 10.0f;
+    public float yOffset = 5.0f;
     
 
     public Transform attachedPlayer;
@@ -26,6 +27,6 @@ public class inFrontOfPlayer : MonoBehaviour
 
 
         float offset = player.x + (lookAheadAmount * offsetMult);
-        transform.position = new Vector3(offset, player.y, player.z);
+        transform.position = new Vector3(offset, (player.y + yOffset), player.z);
     }
 }

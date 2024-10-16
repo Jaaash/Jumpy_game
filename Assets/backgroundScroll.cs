@@ -8,6 +8,7 @@ public class backgroundScroll : MonoBehaviour
     int numLayers;
     Transform[] layers;
     public float[] layerFac;
+    public float yOffset = 1.0f;
     public Camera attachedCamera;
     Vector3 initialPosition;
     void Start()
@@ -30,7 +31,7 @@ public class backgroundScroll : MonoBehaviour
         for (int i = 0; i < numLayers; i++)
         {
             Vector3 scaledDiff = diff * layerFac[i];
-            layers[i].transform.localPosition = new Vector3(scaledDiff.x, scaledDiff.y, 0.0f);
+            layers[i].transform.localPosition = new Vector3(scaledDiff.x, yOffset, 0.0f);
         }
     }
 }

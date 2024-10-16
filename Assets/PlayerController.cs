@@ -6,11 +6,11 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody2D rigidBody;
     public AudioSource coinSound;
-    public float speed = 15.0f;
-    public float jumpForce = 8.0f;
+    public float speed = 12.0f;
+    public float jumpForce = 12.0f;
     public float airControlForce = 10.0f;      // public variables can be adjusted from within Unity editor, under the 'Components' panel.
     public float airControlMax = 1.5f;
-    public float blinkChance = 200.0f;
+    public float blinkChance = 300.0f;
 
     public int coinCount = 0;
 

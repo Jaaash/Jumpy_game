@@ -11,6 +11,10 @@ public class CameraScript : MonoBehaviour
     public float boxSizeY = 10.0f;
     public float blendAmount = 0.05f; // lower values blend slower
 
+    public float minX = -1000.0f;
+    public float maxX = 1000.0f;
+    public float minY = -1000.0f;
+    public float maxY = 1000.0f;
 
     void Start()
     {
@@ -45,13 +49,15 @@ public class CameraScript : MonoBehaviour
             camY = playerPos.y + 0.5f * (screenY1 - screenY0) - boxSizeY;
         else if (box_y1 > screenY1)
             camY = playerPos.y - 0.5f * (screenY1 - screenY0) + boxSizeY;
-        transform.position = new Vector3(camX, camY, cameraPos.z);
+
+
+        if (camX <= maxX && camX >= minX && camY <= maxY && camY >= minY)
+        {
+            transform.position = new Vector3(camX, camY, cameraPos.z);
+        }
+        else if (camX <= minX) { transform.position = new Vector3(minX, camY, cameraPos.z); }
+        else if (camX >= maxX) { transform.position = new Vector3(maxX, camY, cameraPos.z); }
+        else if (camY <= minY) { transform.position = new Vector3(camX, minY, cameraPos.z); }
+        else if (camY >= maxY) { transform.position = new Vector3(camX, maxY, cameraPos.z); }
     }
 }
-
-
-/* TO DO:
- * Figure out how to make an invisible floating dot infront of the player
- * have the distance between the dot and the player be decided by lookAheadAmount * h
- * centre the camera box around that dot instead of the player.
- */
