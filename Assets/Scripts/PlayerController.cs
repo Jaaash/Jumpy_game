@@ -1,34 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
+using UnityEditor.U2D;
 
 public class PlayerController : MonoBehaviour
 {
     Rigidbody2D rigidBody;
     public AudioSource coinSound;
-    public float speed = 12.0f;
-    public float jumpForce = 12.0f;
-    public float airControlForce = 10.0f;      // public variables can be adjusted from within Unity editor, under the 'Components' panel.
+
+    public float speed = 15.0f;
+    public float jumpForce = 15.0f;
+    public float airControlForce = 10.0f; 
     public float airControlMax = 1.5f;
     public float blinkChance = 300.0f;
+    public float fastFallAmount = 30.0f;
+    public float sprintMultiplier = 1.5f;
+    float baseSpeed;
+    float baseAnimSpeed;
+    bool jumpReady;
 
-    public int coinCount = 0;
+    public TextMeshProUGUI uiText;
+    int coinsCollected;
+    int coinsInLevel;
 
     Vector2 boxExtents;      // Variable to contain the vector info for the outer bounds of the BoxCollider
     Animator animator;
 
-    // Use this for initialization
+
+
     void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
         boxExtents = GetComponent<BoxCollider2D>().bounds.extents; // sets the boxExtents variable
         animator = GetComponent<Animator>();
+        baseSpeed = speed;
+        baseAnimSpeed = animator.speed;
+        jumpReady = false;
+
+        coinsCollected = 0;
+        coinsInLevel = GameObject.FindGameObjectsWithTag("Coin").Length;
     }
 
-    // Update is called once per frame
     void Update()
     {
-
         float xSpeed = Mathf.Abs(rigidBody.velocity.x);
         animator.SetFloat("xSpeed", xSpeed);
         float ySpeed = Mathf.Abs(rigidBody.velocity.y);
@@ -39,8 +56,8 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         }
 
-
-        float blinkVal = Random.Range(0.0f, blinkChance);          // Blinking control
+     //Blinking animation handling
+        float blinkVal = Random.Range(0.0f, blinkChance);
         if (blinkVal < 1.0f)
         {
             animator.SetTrigger("blinkTrigger");
@@ -49,10 +66,26 @@ public class PlayerController : MonoBehaviour
             {
                 animator.ResetTrigger("blinkTrigger");
             }
+
+     // Coin UI handling
+        string coinUI = coinsCollected + "/" + coinsInLevel;
+        uiText.text = coinUI;
     }
     void FixedUpdate()
     {
         float h = Input.GetAxis("Horizontal");
+
+        // Sprint Control
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            speed = baseSpeed * sprintMultiplier;
+            animator.speed = baseAnimSpeed * sprintMultiplier;
+        }
+        else
+        { 
+            speed = baseSpeed; 
+            animator.speed = baseAnimSpeed; 
+        }
 
         // check if we are on the ground
         Vector2 bottom =
@@ -65,11 +98,20 @@ public class PlayerController : MonoBehaviour
 
         bool grounded = result.collider != null && result.normal.y > 0.9f;
         if (grounded)
-        {
-            if (Input.GetAxis("Jump") > 0.0f)
+        { 
+            if (Input.GetAxis("Jump") > 0.0f && jumpReady)
+            {
                 rigidBody.AddForce(new Vector2(0.0f, jumpForce), ForceMode2D.Impulse);
-            else
+                jumpReady = false;
+            }
+            else 
+            {
+                if (Input.GetAxis("Jump") == 0.0f)
+                {
+                    jumpReady = true;
+                }
                 rigidBody.velocity = new Vector2(speed * h, rigidBody.velocity.y);
+            }
         }
         else
         {
@@ -77,17 +119,26 @@ public class PlayerController : MonoBehaviour
             float vx = rigidBody.velocity.x;
             if (h * vx < airControlMax)
                 rigidBody.AddForce(new Vector2(h * airControlForce, 0));
+
+            //Fast fall when Jump button is released
+            if (Input.GetAxis("Jump") == 0.0f || rigidBody.velocity.y < 0)
+            {
+                rigidBody.AddForce(new Vector2(0.0f, -fastFallAmount), ForceMode2D.Force);
+            }
         }
 
     }
     void OnTriggerEnter2D( Collider2D coll )
     {
-        if ( coll.gameObject.tag == "Coin")
+        if (coll.gameObject.tag == "Coin")
         {
             Destroy(coll.gameObject);
-            coinCount++;
+            coinsCollected++;
             coinSound.Play();
-            Debug.Log("COING ET!! " + coinCount);
+        }
+        if (coll.gameObject.tag == "KillPlayer")
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);  // reset the level
         }
     }
 } 

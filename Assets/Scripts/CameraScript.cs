@@ -9,8 +9,8 @@ public class CameraScript : MonoBehaviour
     Camera thisCamera;
     public float boxSizeX = 15.0f; //Size of box around player. Higher numbers = more responsive camera
     public float boxSizeY = 10.0f;
-    public float blendAmount = 0.05f; // lower values blend slower
 
+    // Vars for setting level's outer boundaries - Camera cannot cross these bounds.
     public float minX = -1000.0f;
     public float maxX = 1000.0f;
     public float minY = -1000.0f;
@@ -50,14 +50,12 @@ public class CameraScript : MonoBehaviour
         else if (box_y1 > screenY1)
             camY = playerPos.y - 0.5f * (screenY1 - screenY0) + boxSizeY;
 
+        // Camera Out Of Bounds correction
+        if      (camX < minX) { camX = minX; }
+        else if (camX > maxX) { camX = maxX; }
+        if      (camY < minY) { camY = minY; }
+        else if (camY > maxY) { camY = maxY; }
 
-        if (camX <= maxX && camX >= minX && camY <= maxY && camY >= minY)
-        {
-            transform.position = new Vector3(camX, camY, cameraPos.z);
-        }
-        else if (camX <= minX) { transform.position = new Vector3(minX, camY, cameraPos.z); }
-        else if (camX >= maxX) { transform.position = new Vector3(maxX, camY, cameraPos.z); }
-        else if (camY <= minY) { transform.position = new Vector3(camX, minY, cameraPos.z); }
-        else if (camY >= maxY) { transform.position = new Vector3(camX, maxY, cameraPos.z); }
+        transform.position = new Vector3(camX, camY, cameraPos.z); 
     }
 }
