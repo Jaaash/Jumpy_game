@@ -196,8 +196,8 @@ MonoBehaviour:
   coinSound: {fileID: 0}
   speed: 15
   jumpForce: 15
-  airControlForce: 10
-  airControlMax: 1.5
+  airControlForce: 15
+  airControlMax: 10
   blinkChance: 200
   fastFallAmount: 30
   sprintMultiplier: 1.5

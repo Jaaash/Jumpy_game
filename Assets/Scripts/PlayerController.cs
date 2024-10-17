@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     bool jumpReady;
 
     public TextMeshProUGUI uiText;
+    public TextMeshPro levelEndText;
     int coinsCollected;
     int coinsInLevel;
 
@@ -70,6 +71,9 @@ public class PlayerController : MonoBehaviour
      // Coin UI handling
         string coinUI = coinsCollected + "/" + coinsInLevel;
         uiText.text = coinUI;
+
+        if (coinsCollected != coinsInLevel) { levelEndText.text = "Collect all coins first!";  }
+        else { levelEndText.text = ""; }
     }
     void FixedUpdate()
     {
@@ -139,6 +143,13 @@ public class PlayerController : MonoBehaviour
         if (coll.gameObject.tag == "KillPlayer")
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);  // reset the level
+        }
+        if (coll.gameObject.tag == "LevelEnd")
+        {
+            if (coinsCollected == coinsInLevel)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);  // next level
+            }
         }
     }
 } 

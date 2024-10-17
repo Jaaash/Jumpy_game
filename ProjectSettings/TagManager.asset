@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Coin
   - KillPlayer
+  - LevelEnd
   layers:
   - Default
   - TransparentFX
